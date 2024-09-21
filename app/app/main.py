@@ -44,12 +44,14 @@ async def read_item(skip: int = 0, limit: int = 10):
     return fake_items_db[skip : skip + limit]
 
 #Optional parameter
+#The same way, you can declare optional query parameters, by setting their default to None
 @app.get("/items/{item_id}")
 async def read_items(item_id: str, q: str | None = None):
     if q:
         return {"item_id": item_id, "q": q}
     return {"item_id": item_id}
 
+ # You can also declare bool types, and they will be converted: 
 @app.get("/users/{user_id}/items/{item_id}")
 async def read_user_item(
     user_id: int, item_id: str, q: str | None = None, short: bool = False
@@ -62,6 +64,10 @@ async def read_user_item(
             {"description": "This is an amazing item that has a long description"}
         )
     return item
+
+#You can declare multiple path parameters and query parameters at the same time, FastAPI knows which is which.
+
+#And you don't have to declare them in any specific order.
 
 @app.get("/items/{item_id}")
 async def read_user_items(item_id: str, needy: str):
