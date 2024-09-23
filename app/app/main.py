@@ -1,5 +1,6 @@
 from enum import Enum   #Import Enum and create a sub-class that inherits from str and from Enum.
 from fastapi import FastAPI
+from pydantic import BaseModel
 
 # Declare path parametr
 # Then create a path parameter with a type annotation using the enum class you created (ModelName):
@@ -8,8 +9,24 @@ class ModelName(str, Enum):
     resnet = "resnet"
     lenet = "lenet"
 
+#Request body
+
+class Item(BaseModel):
+    name: str
+    description: str | None = None
+    price: float
+    tax: float | None = None
 
 app =FastAPI()
+
+@app.post("/items/")
+async def create_item(item: Item):
+    # Item.name.capitalize()
+    return item
+
+# @app.post("/items/")
+# async def creates_items(item: Item):
+#     return item
 #root
 @app.get('/')
 async def root():
@@ -46,7 +63,7 @@ async def read_item(skip: int = 0, limit: int = 10):
 #Optional parameter
 #The same way, you can declare optional query parameters, by setting their default to None
 @app.get("/items/{item_id}")
-async def read_items(item_id: str, q: str | None = None):
+async def reads_items(item_id: str, q: str | None = None):
     if q:
         return {"item_id": item_id, "q": q}
     return {"item_id": item_id}
@@ -73,3 +90,4 @@ async def read_user_item(
 async def read_user_items(item_id: str, needy: str):
     item = {"item_id": item_id, "needy": needy}
     return item
+
